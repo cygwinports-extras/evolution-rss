@@ -1,0 +1,71 @@
+--- origsrc/evolution-rss-0.2.0/configure.ac	2010-07-20 15:32:03.000000000 -0500
++++ src/evolution-rss-0.2.0/configure.ac	2010-07-22 02:32:46.101343700 -0500
+@@ -366,6 +366,23 @@ AC_SUBST(privlibdir)
+ dnl Win32
+ AC_MSG_CHECKING([for Win32])
+ case "$host" in
++*-cygwin*)
++    os_win32=no
++    NO_UNDEFINED='-no-undefined'
++	if test $evolution_int_version -ge 23000; then
++		NO_UNDEFINED_LIBS='$(EVOLUTION_RSS_EPLUGIN_LIBS) -levolution-mail -lemiscwidgets -lemformat'
++	else
++		if test $evolution_int_version -ge 22700 -a $evolution_int_version -lt 22900; then
++			NO_UNDEFINED_LIBS='$(EVOLUTION_RSS_EPLUGIN_LIBS) -levolution-mail-shared -levolution-mail -lemiscwidgets'
++		else
++			NO_UNDEFINED_LIBS='$(EVOLUTION_RSS_EPLUGIN_LIBS) -levolution-mail -lemiscwidgets'
++		fi
++	fi
++    SOPFX='cyg'
++    SOEXT='.dll'
++    PLUGINDIR_IN_SERVER_FILE="$PLUGIN_INSTALL_DIR"
++    IMAGESDIR_IN_SERVER_FILE="$ICON_DIR"
++    ;;
+ *-mingw*)
+     os_win32=yes
+     NO_UNDEFINED='-no-undefined'
+@@ -378,6 +395,7 @@ case "$host" in
+ 			NO_UNDEFINED_LIBS='$(EVOLUTION_RSS_EPLUGIN_LIBS) -levolution-mail -lemiscwidgets'
+ 		fi
+ 	fi
++    SOPFX='lib'
+     SOEXT='.dll'
+ 	PLUGINDIR_IN_SERVER_FILE="../../../lib/evolution/$EVOLUTION_EXEC_VERSION/plugins"
+ 	IMAGESDIR_IN_SERVER_FILE="../../../share/evolution/$EVOLUTION_EXEC_VERSION/images"
+@@ -385,6 +403,7 @@ case "$host" in
+ *)  os_win32=no
+     NO_UNDEFINED=''
+        NO_UNDEFINED_LIBS=''
++    SOPFX='lib'
+     SOEXT='.so'
+        PLUGINDIR_IN_SERVER_FILE="$PLUGIN_INSTALL_DIR"
+        IMAGESDIR_IN_SERVER_FILE="$ICON_DIR"
+@@ -395,6 +414,7 @@ AM_CONDITIONAL(OS_WIN32, [test $os_win32
+ AC_SUBST(NO_UNDEFINED)
+ AC_SUBST(NO_UNDEFINED_LIBS)
+ AC_SUBST(SOEXT)
++AC_SUBST(SOPFX)
+ AC_SUBST(PLUGINDIR_IN_SERVER_FILE)
+ AC_SUBST(IMAGESDIR_IN_SERVER_FILE)
+ 
+--- origsrc/evolution-rss-0.2.0/src/Makefile.am	2010-07-20 15:32:03.000000000 -0500
++++ src/evolution-rss-0.2.0/src/Makefile.am	2010-07-22 02:27:53.725620800 -0500
+@@ -52,6 +52,7 @@ RSS_MENU = \
+ 	-e "s%+GETTEXT_PACKAGE+%$(GETTEXT_PACKAGE)%" \
+ 	-e "s%+LOCALEDIR+%$(LOCALEDIR)%" \
+ 	-e "s%+VERSION+%$(VERSION)%" \
++	-e "s%+SOPFX+%$(SOPFX)%" \
+ 	-e "s%+SOEXT+%$(SOEXT)%" \
+ 	-e "s%+URL+%http://gnome.eu.org/evo/index.php/Evolution_RSS_Reader_Plugin%" \
+ 	$< > $@
+--- origsrc/evolution-rss-0.2.0/src/org-gnome-evolution-rss.eplug.xml	2009-11-01 12:05:42.000000000 -0600
++++ src/evolution-rss-0.2.0/src/org-gnome-evolution-rss.eplug.xml	2010-07-22 02:35:15.659898000 -0500
+@@ -3,7 +3,7 @@
+   <e-plugin
+     type="shlib"
+     id="org.gnome.cooly.plugin.rss"
+-    location="+PLUGIN_INSTALL_DIR+/liborg-gnome-evolution-rss+SOEXT+"
++    location="+PLUGIN_INSTALL_DIR+/+SOPFX+org-gnome-evolution-rss+SOEXT+"
+     domain="+GETTEXT_PACKAGE+"
+     localedir="+LOCALEDIR+"
+     version="+VERSION+"
