@@ -4,9 +4,8 @@ inherit gnome2 git
 DESCRIPTION="Evolution RSS plugin"
 HOMEPAGE="http://gnome.eu.org/evo/"
 #SRC_URI="http://gnome.eu.org/${P}.tar.gz"
-PATCH_URI="0.2.0-cygwin.patch"
+PATCH_URI="0.3.91-cygwin.patch"
 
 DIFF_EXCLUDES=".gitignore POTFILES.skip"
 
-# FIXME: needed for camel headers, should be in camel Requires:
-CFLAGS+=" -I/usr/include/nspr"
+KEEP_LA_FILES="none"

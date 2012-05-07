@@ -1,0 +1,63 @@
+--- origsrc/evolution-rss/configure.ac	2012-04-02 03:27:43.000000000 -0500
++++ src/evolution-rss/configure.ac	2012-04-02 03:34:06.635051700 -0500
+@@ -373,6 +373,15 @@ AC_SUBST(privlibdir)
+ dnl Win32
+ AC_MSG_CHECKING([for Win32])
+ case "$host" in
++*-cygwin*)
++	os_win32=no
++	NO_UNDEFINED='-no-undefined'
++	NO_UNDEFINED_LIBS='$(EVOLUTION_RSS_EPLUGIN_LIBS) -levolution-mail -lemiscwidgets -lemformat'
++	SOPFX='cyg'
++	SOEXT='.dll'
++	PLUGINDIR_IN_SERVER_FILE="$PLUGIN_INSTALL_DIR"
++	IMAGESDIR_IN_SERVER_FILE="$ICON_DIR"
++	;;
+ *-mingw*)
+     os_win32=yes
+     NO_UNDEFINED='-no-undefined'
+@@ -385,6 +394,7 @@ case "$host" in
+ 			NO_UNDEFINED_LIBS='$(EVOLUTION_RSS_EPLUGIN_LIBS) -levolution-mail -lemiscwidgets'
+ 		fi
+ 	fi
++	SOPFX='lib'
+     SOEXT='.dll'
+ 	PLUGINDIR_IN_SERVER_FILE="../../../lib/evolution/$EVOLUTION_EXEC_VERSION/plugins"
+ 	IMAGESDIR_IN_SERVER_FILE="../../../share/evolution/$EVOLUTION_EXEC_VERSION/images"
+@@ -392,6 +402,7 @@ case "$host" in
+ *)  os_win32=no
+     NO_UNDEFINED=''
+        NO_UNDEFINED_LIBS=''
++    SOPFX='lib'
+     SOEXT='.so'
+        PLUGINDIR_IN_SERVER_FILE="$PLUGIN_INSTALL_DIR"
+        IMAGESDIR_IN_SERVER_FILE="$ICON_DIR"
+@@ -401,6 +412,7 @@ AC_MSG_RESULT([$os_win32])
+ AM_CONDITIONAL(OS_WIN32, [test $os_win32 = yes])
+ AC_SUBST(NO_UNDEFINED)
+ AC_SUBST(NO_UNDEFINED_LIBS)
++AC_SUBST(SOPFX)
+ AC_SUBST(SOEXT)
+ AC_SUBST(PLUGINDIR_IN_SERVER_FILE)
+ AC_SUBST(IMAGESDIR_IN_SERVER_FILE)
+--- origsrc/evolution-rss/src/Makefile.am	2012-04-02 03:27:43.000000000 -0500
++++ src/evolution-rss/src/Makefile.am	2012-04-02 03:29:46.946198300 -0500
+@@ -48,6 +48,7 @@ RSS_MENU = \
+ 	-e "s%+GETTEXT_PACKAGE+%$(GETTEXT_PACKAGE)%" \
+ 	-e "s%+LOCALEDIR+%$(LOCALEDIR)%" \
+ 	-e "s%+VERSION+%$(VERSION)%" \
++	-e "s%+SOPFX+%$(SOPFX)%" \
+ 	-e "s%+SOEXT+%$(SOEXT)%" \
+ 	-e "s%+URL+%http://gnome.eu.org/evo/index.php/Evolution_RSS_Reader_Plugin%" \
+ 	$< > $@
+--- origsrc/evolution-rss/src/org-gnome-evolution-rss.eplug.xml	2012-04-02 03:27:43.000000000 -0500
++++ src/evolution-rss/src/org-gnome-evolution-rss.eplug.xml	2012-04-02 03:29:23.569861200 -0500
+@@ -2,7 +2,7 @@
+ <e-plugin-list>
+ <e-plugin type="shlib"
+ 	id="org.gnome.cooly.plugin.rss"
+-	location="+PLUGIN_INSTALL_DIR+/liborg-gnome-evolution-rss+SOEXT+"
++	location="+PLUGIN_INSTALL_DIR+/+SOPFX+org-gnome-evolution-rss+SOEXT+"
+ 	domain="+GETTEXT_PACKAGE+"
+ 	localedir="+LOCALEDIR+"
+ 	version="+VERSION+"
