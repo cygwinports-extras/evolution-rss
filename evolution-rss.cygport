@@ -1,0 +1,18 @@
+GIT_TAG="EVOLUTION-RSS_${PV//./_}"
+inherit gnome2 git
+
+NAME="evolution-rss"
+VERSION=0.3.92
+RELEASE=1
+CATEGORY="GNOME Mail"
+SUMMARY="Evolution RSS plugin"
+DESCRIPTION="This plugin adds RSS Feeds support for Evolution mail. The
+motivation behind this was to have RSS in same place as mails, since a RSS
+Article is like an email message. Evolution RSS can display article using
+summary view or HTML view."
+HOMEPAGE="http://gnome.eu.org/evo/"
+#SRC_URI="http://gnome.eu.org/${P}.tar.gz"
+PATCH_URI="0.3.91-cygwin.patch
+           0.3.92-no-undefined.patch"
+
+DIFF_EXCLUDES=".gitignore POTFILES.skip"
