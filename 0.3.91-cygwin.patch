@@ -7,7 +7,7 @@
 +*-cygwin*)
 +	os_win32=no
 +	NO_UNDEFINED='-no-undefined'
-+	NO_UNDEFINED_LIBS='$(EVOLUTION_RSS_EPLUGIN_LIBS) -levolution-mail -lemiscwidgets -lemformat'
++	NO_UNDEFINED_LIBS='$(EVOLUTION_RSS_EPLUGIN_LIBS) -levolution-mail -lemformat'
 +	SOPFX='cyg'
 +	SOEXT='.dll'
 +	PLUGINDIR_IN_SERVER_FILE="$PLUGIN_INSTALL_DIR"
