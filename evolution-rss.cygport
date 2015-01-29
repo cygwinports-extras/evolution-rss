@@ -1,8 +1,8 @@
-GIT_TAG="EVOLUTION_RSS_${PV//./_}"
+GIT_REV=c2fc676
 inherit gnome2 git
 
 NAME="evolution-rss"
-VERSION=0.3.94
+VERSION=0.3.95
 RELEASE=1
 CATEGORY="GNOME Mail"
 SUMMARY="Evolution RSS plugin"
